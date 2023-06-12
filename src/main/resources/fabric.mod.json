@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "ramel",
+  "version": "${version}",
+  "name": "ramel",
+  "description": "g",
+  "authors": [
+    "g"
+  ],
+  "contact": {
+    "website": "g",
+    "repo": "https://github.com/ix0rai/ramel"
+  },
+  "license": "MIT",
+  "icon": "assets/ramel/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.ix0rai.ramel.client.RamelClient"
+    ],
+    "main": [
+      "io.ix0rai.ramel.Ramel"
+    ]
+  },
+  "mixins": [
+    "ramel.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
