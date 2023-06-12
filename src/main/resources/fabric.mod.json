@@ -3,7 +3,7 @@
   "id": "ramel",
   "version": "${version}",
   "name": "ramel",
-  "description": "g",
+  "description": "bring your camels to ramming speed!",
   "authors": [
     "g"
   ],
@@ -15,12 +15,6 @@
   "icon": "assets/ramel/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "io.ix0rai.ramel.client.RamelClient"
-    ],
-    "main": [
-      "io.ix0rai.ramel.Ramel"
-    ]
   },
   "mixins": [
     "ramel.mixins.json"
