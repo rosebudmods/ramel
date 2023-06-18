@@ -5,10 +5,10 @@
   "name": "ramel",
   "description": "bring your camels to ramming speed!",
   "authors": [
-    "g"
+    "ix0rai"
   ],
   "contact": {
-    "website": "g",
+    "website": "https://modrinth.com/mod/ramel",
     "repo": "https://github.com/ix0rai/ramel"
   },
   "license": "MIT",
@@ -20,8 +20,7 @@
     "ramel.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
-    "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "fabricloader": ">=0.14.14",
+    "minecraft": ">=1.20"
   }
 }
