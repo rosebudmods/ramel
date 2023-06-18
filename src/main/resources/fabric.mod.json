@@ -2,25 +2,40 @@
   "schemaVersion": 1,
   "id": "ramel",
   "version": "${version}",
-  "name": "ramel",
+  "name": "Ramel",
   "description": "bring your camels to ramming speed!",
+
   "authors": [
     "ix0rai"
   ],
+
   "contact": {
     "website": "https://modrinth.com/mod/ramel",
     "repo": "https://github.com/ix0rai/ramel"
   },
+
   "license": "MIT",
   "icon": "assets/ramel/icon.png",
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
   },
+
   "mixins": [
     "ramel.mixins.json"
   ],
+
   "depends": {
     "fabricloader": ">=0.14.14",
     "minecraft": ">=1.20"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",
+        "modmenu.issues": "https://github.com/ix0rai/ramel/issues",
+        "modmenu.website": "https://modrinth.com/mod/ramel"
+      }
+    }
   }
 }
