@@ -1,36 +1,58 @@
 package io.ix0rai.ramel.mixin;
 
+import io.ix0rai.ramel.Config;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.CamelEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import java.util.Objects;
 
 @Mixin(CamelEntity.class)
 public abstract class CamelEntityMixin extends LivingEntity {
+    @Shadow public abstract boolean isDashing();
+
     protected CamelEntityMixin(EntityType<? extends CamelEntity> entityType, World world) {
         super(entityType, world);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Inject(method = "tick", at = @At("HEAD"))
-    public void ram(CallbackInfo ci) {
-        if (((Object) this) instanceof CamelEntity camel && camel.isDashing()) {
-            List<Entity> toRam = this.getWorld().getOtherEntities(this, this.getBoundingBox().expand(0.5), Entity::isLiving);
-            for (Entity entity : toRam) {
-                if (entity instanceof LivingEntity living) {
-                    living.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1f, 1f);
-                    living.takeKnockback(0.4f, MathHelper.sin(this.getYaw() * ((float)Math.PI / 180)), -MathHelper.cos(this.getYaw() * ((float)Math.PI / 180)));
-                }
-            }
+    private void inject$tick(CallbackInfo ci) {
+        if (!this.isDashing() || this.getWorld().isClient()) {
+            return;
         }
+
+        int speedEffectModifier = this.hasStatusEffect(StatusEffects.SPEED) ? Objects.requireNonNull(this.getStatusEffect(StatusEffects.SPEED)).getAmplifier() + 1 : 0;
+        int slowEffectModifier = this.hasStatusEffect(StatusEffects.SLOWNESS) ? Objects.requireNonNull(this.getStatusEffect(StatusEffects.SLOWNESS)).getAmplifier() + 1 : 0;
+        double speedAdjustedImpact = MathHelper.clamp(this.getMovementSpeed() * 1.65, .2, 3.0) + .25 * (speedEffectModifier - slowEffectModifier);
+
+        float rammingRange = Config.INSTANCE.additionalRammingRange.value() * (isBaby() ? 0.5F : 1.0F);
+        float rammingDamage = Config.INSTANCE.rammingDamage.value() * (isBaby() ? 0.5F : 1.0F);
+        float knockBackMultiplier = Config.INSTANCE.knockbackMultiplier.value() * (isBaby() ? 0.5F : 1.0F);
+
+        DamageSource source = this.getDamageSources().mobAttack(this.getPrimaryPassenger() != null ? this.getPrimaryPassenger() : this);
+
+        this.getWorld().getOtherEntities(this, getBoundingBox().expand(rammingRange), Entity::isAlive).stream()
+                .filter(e -> e instanceof LivingEntity && !this.getPassengerList().contains(e))
+                .forEach(e -> {
+                    LivingEntity entity = (LivingEntity) e;
+
+                    entity.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK);
+                    entity.damage(source, rammingDamage);
+                    final double blockedImpact = entity.blockedByShield(source) ? .5 : 1.0;
+
+                    entity.takeKnockback(blockedImpact * speedAdjustedImpact * knockBackMultiplier,
+                            MathHelper.sin(this.getPitch() * ((float) Math.PI / 180)), -MathHelper.cos(this.getPitch() * ((float) Math.PI / 180)));
+                });
     }
 }

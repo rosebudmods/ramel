@@ -1,21 +1,30 @@
 plugins {
-    id 'fabric-loom' version '1.2.4'
-    id 'maven-publish'
+    id "fabric-loom" version "1.6+"
+    id "com.github.johnrengelman.shadow" version "8.1+"
+    id "maven-publish"
 }
 
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven {
-        url = "https://maven.quiltmc.org/repository/release/"
-    }
+    maven { url = "https://maven.quiltmc.org/repository/release/" }
+}
+
+configurations {
+    shadow
+    api.extendsFrom shadow
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.minecraft_version}")
     mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2")
     modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
+
+    include(implementation("org.quiltmc:quilt-config:${project.quilt_config_version}"))
+    include(implementation("org.quiltmc.quilt-config.serializers:toml:${project.quilt_config_version}"))
+    include(implementation("com.electronwill.night-config:core:${project.night_config_version}"))
+    include(implementation("com.electronwill.night-config:toml:${project.night_config_version}"))
 }
 
 processResources {
