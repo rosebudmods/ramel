@@ -1,0 +1,12 @@
+{
+  "ramel.config.title": "Ramel Config",
+  "ramel.config.rammingDamage": "Ramming Damage",
+  "ramel.config.additionalRammingRange": "Additional Range",
+  "ramel.config.knockbackMultiplier": "Knockback",
+  "ramel.config.value.rammingDamage": "%s",
+  "ramel.config.value.additionalRammingRange": "%s blocks",
+  "ramel.config.value.knockbackMultiplier": "%sx",
+  "ramel.config.tooltip.rammingDamage": "The amount of damage dealt to entities rammed, in half-hearts.",
+  "ramel.config.tooltip.additionalRammingRange": "The amount of extra range beyond the camel's normal hitbox that the ramming effect will apply.",
+  "ramel.config.tooltip.knockbackMultiplier": "The knockback multiplier applied to entities rammed."
+}

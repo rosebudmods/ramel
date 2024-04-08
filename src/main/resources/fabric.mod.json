@@ -18,6 +18,9 @@
   "icon": "assets/ramel/icon.png",
   "environment": "*",
   "entrypoints": {
+    "modmenu": [
+      "io.ix0rai.ramel.client.RamelModMenu"
+    ]
   },
 
   "mixins": [
