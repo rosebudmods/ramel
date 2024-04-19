@@ -4,8 +4,7 @@
   "package": "io.ix0rai.ramel.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "CamelEntityMixin",
-    "RangeAccessor"
+    "CamelEntityMixin"
   ],
   "client": [
   ],

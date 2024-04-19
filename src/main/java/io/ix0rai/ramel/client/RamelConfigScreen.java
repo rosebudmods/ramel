@@ -2,7 +2,6 @@ package io.ix0rai.ramel.client;
 
 import com.mojang.serialization.Codec;
 import io.ix0rai.ramel.Config;
-import io.ix0rai.ramel.mixin.RangeAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -39,15 +38,12 @@ public class RamelConfigScreen extends SimpleOptionsScreen {
 			throw new RuntimeException("value must have float range constraint " + trackedValue);
 		}
 
-		final double max = (float) ((RangeAccessor) (Object) range).getMax();
-		final double min = (float) ((RangeAccessor) (Object) range).getMin();
-
 		return new Option<>(
 				"ramel.config." + trackedValue.key().toString(),
 				Option.constantTooltip(Text.translatable("ramel.config.tooltip." + trackedValue.key().toString())),
 				(text, value) -> GameOptions.getGenericValueText(text, Text.translatable("ramel.config.value." + trackedValue.key().toString(), value)),
-				new Option.IntRangeValueSet((int) min * 10, (int) max * 10).withModifier(i -> (double) i / 10.0, double_ -> (int) (double_ * 10.0)),
-				Codec.doubleRange(min, max),
+				new Option.IntRangeValueSet((int) ((float) range.min() * 10), (int) ((float) range.max() * 10)).withModifier(i -> (double) i / 10.0, double_ -> (int) (double_ * 10.0)),
+				Codec.doubleRange((float) range.min(), (float) range.max()),
 				(double) trackedValue.getDefaultValue(),
 				value -> {
 					trackedValue.setValue(value.floatValue());
