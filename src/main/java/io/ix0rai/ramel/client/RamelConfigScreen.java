@@ -14,14 +14,15 @@ import org.jetbrains.annotations.Nullable;
 import org.quiltmc.config.api.Constraint;
 import org.quiltmc.config.api.values.TrackedValue;
 
+import java.util.stream.StreamSupport;
+
 @Environment(EnvType.CLIENT)
 public class RamelConfigScreen extends SimpleOptionsScreen {
+	@SuppressWarnings("unchecked")
 	public RamelConfigScreen(@Nullable Screen parent) {
-		super(parent, MinecraftClient.getInstance().options, Text.translatable("ramel.config.title"), new Option[]{
-				createOptional(Config.INSTANCE.rammingDamage),
-				createOptional(Config.INSTANCE.additionalRammingRange),
-				createOptional(Config.INSTANCE.knockbackMultiplier),
-		});
+		super(parent, MinecraftClient.getInstance().options, Text.translatable("ramel.config.title"),
+				StreamSupport.stream(Config.INSTANCE.values().spliterator(), false).map(value -> createOptional((TrackedValue<Float>) value)).toArray(Option[]::new)
+		);
 	}
 
 	@SuppressWarnings("all")
