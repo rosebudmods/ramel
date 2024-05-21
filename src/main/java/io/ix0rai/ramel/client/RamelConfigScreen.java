@@ -45,7 +45,7 @@ public class RamelConfigScreen extends SimpleOptionsScreen {
 				(text, value) -> GameOptions.getGenericValueText(text, Text.translatable("ramel.config.value." + trackedValue.key().toString(), value)),
 				new Option.IntRangeValueSet((int) ((float) range.min() * 10), (int) ((float) range.max() * 10)).withModifier(i -> (double) i / 10.0, double_ -> (int) (double_ * 10.0)),
 				Codec.doubleRange((float) range.min(), (float) range.max()),
-				(double) trackedValue.getDefaultValue(),
+				(double) trackedValue.value(),
 				value -> {
 					trackedValue.setValue(value.floatValue());
 				}
