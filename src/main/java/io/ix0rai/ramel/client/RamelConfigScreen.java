@@ -1,6 +1,8 @@
 package io.ix0rai.ramel.client;
 
 import com.mojang.serialization.Codec;
+import folk.sisby.kaleido.lib.quiltconfig.api.Constraint;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import io.ix0rai.ramel.Config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,8 +13,6 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.config.api.Constraint;
-import org.quiltmc.config.api.values.TrackedValue;
 
 import java.util.stream.StreamSupport;
 
