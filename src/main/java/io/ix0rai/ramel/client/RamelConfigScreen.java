@@ -26,7 +26,7 @@ public class RamelConfigScreen extends SimpleOptionsScreen {
 	}
 
 	@SuppressWarnings("all")
-	private static Option<Double> createOptional(TrackedValue<Float> trackedValue) {
+	private static Option<Float> createOptional(TrackedValue<Float> trackedValue) {
 		Constraint.Range<?> range = null;
 
 		for (Constraint<?> c : trackedValue.constraints()) {
@@ -39,13 +39,20 @@ public class RamelConfigScreen extends SimpleOptionsScreen {
 			throw new RuntimeException("value must have float range constraint " + trackedValue);
 		}
 
-		return new Option<>(
+		float min = (float) range.min();
+		float max = (float) range.max();
+
+		return new Option<Float>(
 				"ramel.config." + trackedValue.key().toString(),
 				Option.constantTooltip(Text.translatable("ramel.config.tooltip." + trackedValue.key().toString())),
 				(text, value) -> GameOptions.getGenericValueText(text, Text.translatable("ramel.config.value." + trackedValue.key().toString(), value)),
-				new Option.IntRangeValueSet((int) ((float) range.min() * 10), (int) ((float) range.max() * 10)).withModifier(i -> (double) i / 10.0, double_ -> (int) (double_ * 10.0)),
-				Codec.doubleRange((float) range.min(), (float) range.max()),
-				(double) trackedValue.value(),
+				(new Option.IntRangeValueSet((int) (min * 10), (int) (max * 10))).withModifier((i) -> {
+					return (float) (i / 10.0);
+				}, (double_) -> {
+					return (int) (double_ * 10.0);
+				}),
+				Codec.floatRange(min, max),
+				trackedValue.value(),
 				value -> {
 					trackedValue.setValue(value.floatValue());
 				}
