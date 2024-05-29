@@ -26,6 +26,8 @@ dependencies {
 
     implementation("folk.sisby:kaleido-config:0.3.1+1.3.1")
     include("folk.sisby:kaleido-config:0.3.1+1.3.1")
+
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 }
 
 processResources {

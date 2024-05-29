@@ -42,7 +42,7 @@ public abstract class CamelEntityMixin extends LivingEntity {
 
         DamageSource source = this.getDamageSources().mobAttack(this.getPrimaryPassenger() != null ? this.getPrimaryPassenger() : this);
 
-        this.getWorld().getOtherEntities(this, getBoundingBox().expand(rammingRange), Entity::isAlive).stream()
+        this.getWorld().getOtherEntities(this, this.getBounds().expand(rammingRange), Entity::isAlive).stream()
                 .filter(e -> e instanceof LivingEntity && !this.getPassengerList().contains(e))
                 .forEach(e -> {
                     LivingEntity entity = (LivingEntity) e;
