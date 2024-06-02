@@ -18,6 +18,9 @@
   "icon": "assets/ramel/icon.png",
   "environment": "*",
   "entrypoints": {
+    "client": [
+      "io.ix0rai.ramel.RamelClient"
+    ],
     "modmenu": [
       "io.ix0rai.ramel.client.RamelModMenu"
     ]
@@ -29,6 +32,7 @@
 
   "depends": {
     "fabricloader": ">=0.15.6",
+    "fabric-api": "*",
     "minecraft": ">=1.20.6"
   },
 
