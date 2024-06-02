@@ -1,4 +1,3 @@
-/*
 package io.ix0rai.ramel.client;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
@@ -13,4 +12,3 @@ public class RamelModMenu implements ModMenuApi {
 		return RamelConfigScreen::new;
 	}
 }
-*/
