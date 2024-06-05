@@ -26,8 +26,8 @@ public class RamelConfigScreen extends GameOptionsScreen {
 	@SuppressWarnings("unchecked")
 	protected void method_60325() { // addOptions
 		// this.list
-        assert this.field_51824 != null;
-        this.field_51824.addEntries(StreamSupport.stream(Config.INSTANCE.values().spliterator(), false)
+		assert this.field_51824 != null;
+		this.field_51824.addEntries(StreamSupport.stream(Config.INSTANCE.values().spliterator(), false)
 				.map(value -> createOptional((TrackedValue<Float>) value)).toArray(Option[]::new));
 	}
 
