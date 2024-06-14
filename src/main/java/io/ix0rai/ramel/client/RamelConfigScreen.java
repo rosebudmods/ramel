@@ -8,7 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
@@ -17,12 +17,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.StreamSupport;
 
 @Environment(EnvType.CLIENT)
-public class RamelConfigScreen extends SimpleOptionsScreen {
-	@SuppressWarnings("unchecked")
+public class RamelConfigScreen extends GameOptionsScreen {
 	public RamelConfigScreen(@Nullable Screen parent) {
-		super(parent, MinecraftClient.getInstance().options, Text.translatable("ramel.config.title"),
-				StreamSupport.stream(Config.INSTANCE.values().spliterator(), false).map(value -> createOptional((TrackedValue<Float>) value)).toArray(Option[]::new)
-		);
+		super(parent, MinecraftClient.getInstance().options, Text.translatable("ramel.config.title"));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void method_60325() { // addOptions
+		// this.list
+		assert this.field_51824 != null;
+		this.field_51824.addEntries(StreamSupport.stream(Config.INSTANCE.values().spliterator(), false)
+				.map(value -> createOptional((TrackedValue<Float>) value)).toArray(Option[]::new));
 	}
 
 	@SuppressWarnings("all")
