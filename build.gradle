@@ -2,6 +2,7 @@ plugins {
     id "fabric-loom" version "1.6+"
     id "com.github.johnrengelman.shadow" version "8.1+"
     id "maven-publish"
+    id "me.modmuss50.mod-publish-plugin" version "0.5.2"
 }
 
 version = project.mod_version
@@ -40,6 +41,45 @@ processResources {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version
+    }
+}
+
+publishMods {
+    displayName = "ramel ${project.version}"
+    file = remapJar.archiveFile
+    changelog = rootProject.file("CHANGELOG.md").getText()
+    type = STABLE
+
+    modLoaders.add("quilt")
+    modLoaders.add("fabric")
+
+    dryRun = !providers.environmentVariable("MODRINTH_TOKEN").isPresent()
+            || !providers.environmentVariable("CURSEFORGE_TOKEN").isPresent()
+            || property("pub.should_publish") == "false"
+    dryRun = false
+
+    var mcVersions = [project.minecraft_version]
+    mcVersions.addAll(property("pub.additional_versions").toString().split(" ").findAll { !it.empty })
+
+    modrinth {
+        projectId = "4Uw92C2y"
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        mcVersions.forEach(minecraftVersions::add)
+
+        requires("fabric-api")
+        optional("modmenu")
+    }
+
+    curseforge {
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        projectId = "877074"
+        mcVersions.forEach(minecraftVersions::add)
+
+        clientRequired = true
+        serverRequired = false
+
+        requires("fabric-api")
+        optional("modmenu")
     }
 }
 
