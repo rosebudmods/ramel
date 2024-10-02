@@ -21,9 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CamelEntity.class)
 public abstract class CamelEntityMixin extends LivingEntity {
-
-    @Shadow
-    public abstract boolean isDashing();
+    @Shadow public abstract boolean isDashing();
 
     protected CamelEntityMixin(EntityType<? extends CamelEntity> entityType, World world) {
         super(entityType, world);
