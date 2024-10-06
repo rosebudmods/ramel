@@ -1,7 +1,8 @@
-package io.ix0rai.ramel.client;
+package io.ix0rai.ramel.fabric.client;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+import io.ix0rai.ramel.client.RamelConfigScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
