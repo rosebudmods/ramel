@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "MIT"
+issueTrackerURL = "${issue_tracker_url}"
+sourcesUrl = "${sources_url}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "Ramel"
+displayURL = "${website_url}"
+logoFile = "icon.png"
+#credits = "" #optional
+authors = "ix0rai"
+description = '''bring your camels to ramming speed!''' # Supports multiline text
+displayTest = "IGNORE_SERVER_VERSION" # do not cause a red X if installed on server but not client
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
+
+[dependencies]
+"${mod_id}" = [
+    { modId = "neoforge", type = "required", versionRange = "*", ordering = "NONE", side = "BOTH" },
+    { modId = "minecraft", type = "required", versionRange = "[1.21,)", ordering = "NONE", side = "BOTH" },
+]
+
+# Features are specific properties of the game environment, that you may want to declare you require. This example declares
+# that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
+# stop your mod loading on the server for example.
+[features.${mod_id}]
+#openGLVersion="[3.2,)"
+javaVersion = "[${java_version},)"

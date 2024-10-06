@@ -1,115 +1,107 @@
 plugins {
-    id "fabric-loom" version "1.6+"
-    id "com.github.johnrengelman.shadow" version "8.1+"
-    id "maven-publish"
-    id "me.modmuss50.mod-publish-plugin" version "0.5.2"
+    id 'idea'
+    id 'maven-publish'
+    id 'me.modmuss50.mod-publish-plugin' version '0.7.4' apply false
+    id 'net.neoforged.moddev' version '2.0.34-beta' apply false
 }
 
-version = project.mod_version
+version = "${project.mod_version}+mc${project.minecraft_version}"
 group = project.maven_group
 
-repositories {
-    maven { url = "https://maven.quiltmc.org/repository/release/" }
-    maven { url = "https://maven.terraformersmc.com/releases/" }
-    maven { url = "https://repo.sleeping.town/" }
-}
+def targetJavaVersion = 21
 
-configurations {
-    shadow
-    api.extendsFrom shadow
-}
+subprojects {
+    apply plugin: 'java-library'
+    project.group = rootProject.group
+    project.version = rootProject.version
 
-dependencies {
-    minecraft("com.mojang:minecraft:${project.minecraft_version}")
-    mappings("org.quiltmc:quilt-mappings:${project.minecraft_version}+build.${project.quilt_mappings}:intermediary-v2")
-    modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
-
-    implementation("folk.sisby:kaleido-config:${project.kaleido_config_version}")
-    include("folk.sisby:kaleido-config:${project.kaleido_config_version}")
-
-    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "loader_version", project.loader_version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
-    }
-}
-
-publishMods {
-    displayName = "ramel ${project.version}"
-    file = remapJar.archiveFile
-    changelog = rootProject.file("CHANGELOG.md").getText()
-    type = STABLE
-
-    modLoaders.add("quilt")
-    modLoaders.add("fabric")
-
-    dryRun = !providers.environmentVariable("MODRINTH_TOKEN").isPresent()
-            || !providers.environmentVariable("CURSEFORGE_TOKEN").isPresent()
-            || property("pub.should_publish") == "false"
-    dryRun = false
-
-    var mcVersions = [project.minecraft_version]
-    mcVersions.addAll(property("pub.additional_versions").toString().split(" ").findAll { !it.empty })
-
-    modrinth {
-        projectId = "4Uw92C2y"
-        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-        mcVersions.forEach(minecraftVersions::add)
-
-        requires("fabric-api")
-        optional("modmenu")
+    repositories {
+        maven { url = 'https://maven.quiltmc.org/repository/release' }
+        maven { url = 'https://maven.terraformersmc.com/releases' }
+        maven { url = 'https://repo.sleeping.town' }
+        maven {
+            name = "ParchmentMC"
+            url = "https://maven.parchmentmc.org"
+            content {
+                includeGroupAndSubgroups "org.parchmentmc"
+            }
+        }
     }
 
-    curseforge {
-        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-        projectId = "877074"
-        mcVersions.forEach(minecraftVersions::add)
-
-        clientRequired = true
-        serverRequired = false
-
-        requires("fabric-api")
-        optional("modmenu")
+    java {
+        withSourcesJar()
+        def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+        if (JavaVersion.current() < javaVersion) {
+            toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+        }
     }
-}
 
-def targetJavaVersion = 17
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = 'UTF-8'
         it.options.release = targetJavaVersion
     }
-}
 
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    javadoc {
+        // need this so javadoc doesnt complain about mixin's @reason
+        options.tags = ['reason']
     }
-    archivesBaseName = project.archives_base_name
-}
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+    base {
+        archivesName = "${rootProject.archives_base_name}-${project.name}"
+    }
+
+    jar {
+        from('LICENSE') {
+            rename { "LICENSE_${rootProject.archives_base_name}"}
+        }
+    }
+
+    sourcesJar {
+        from('LICENSE') {
+            rename { "LICENSE_${rootProject.archives_base_name}" }
+        }
+    }
+
+    processResources {
+        filteringCharset 'UTF-8'
+
+        def expandProps = [
+                'version': version,
+                'minecraft_version': project.minecraft_version,
+                'mod_id': project.mod_id,
+                'maven_group_id': project.maven_group,
+                'website_url': project.website_url,
+                'sources_url': project.sources_url,
+                'issue_tracker_url': project.issue_tracker_url,
+                'discord_url': project.discord_url,
+
+                'fabric_loader_version': project.fabric_loader_version,
+                'neoforge_version': project.neoforge_version,
+                'java_version': targetJavaVersion
+        ]
+
+        filesMatching(['pack.mcmeta', '*.mod.json', 'META-INF/*mods.toml', '*.mixins.json']) {
+            expand expandProps
+        }
+        inputs.properties(expandProps)
+    }
+
+    publishing {
+        publications {
+            "mavenJava_${project.name}"(MavenPublication) {
+                artifactId base.archivesName.get()
+                from components.java
+            }
+        }
     }
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
+allprojects {
+    // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
         }
     }
 }

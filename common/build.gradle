@@ -1,0 +1,21 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+dependencies {
+    compileOnly("org.jetbrains:annotations:${project.jetbrains_annotations_version}")
+    compileOnly("net.fabricmc:sponge-mixin:${project.mixin_version}")
+    compileOnly("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}")
+
+    compileOnly("folk.sisby:kaleido-config:${project.kaleido_config_version}")
+}
+
+neoForge {
+    neoFormVersion = project.neoform_version
+
+    parchment {
+        minecraftVersion = project.parchment_minecraft_version
+        mappingsVersion = project.parchment_mappings_version
+    }
+}
