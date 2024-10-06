@@ -1,12 +1,15 @@
 package io.ix0rai.ramel.mixin;
 
 import io.ix0rai.ramel.Config;
+import java.util.Objects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.CamelEntity;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -15,8 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(CamelEntity.class)
 public abstract class CamelEntityMixin extends LivingEntity {
@@ -53,6 +54,10 @@ public abstract class CamelEntityMixin extends LivingEntity {
 
                     entity.takeKnockback(blockedImpact * speedAdjustedImpact * knockBackMultiplier,
                             MathHelper.sin(this.getPitch() * ((float) Math.PI / 180)), -MathHelper.cos(this.getPitch() * ((float) Math.PI / 180)));
+                    if (entity instanceof ServerPlayerEntity player) {
+                        // The player won't feel any effects if we don't update the velocity
+                        player.networkHandler.send(new EntityVelocityUpdateS2CPacket(player));
+                    }
                 });
     }
 }
