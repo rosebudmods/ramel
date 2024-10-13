@@ -1,4 +1,4 @@
-package io.ix0rai.ramel.service;
+package dev.rosebud.ramel.service;
 
 import folk.sisby.kaleido.lib.quiltconfig.api.serializers.TomlSerializer;
 import folk.sisby.kaleido.lib.quiltconfig.implementor_api.ConfigEnvironment;

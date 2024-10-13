@@ -1,6 +1,6 @@
-package io.ix0rai.ramel.neoforge.client;
+package dev.rosebud.ramel.neoforge.client;
 
-import io.ix0rai.ramel.client.RamelConfigScreen;
+import dev.rosebud.ramel.client.RamelConfigScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModContainer;

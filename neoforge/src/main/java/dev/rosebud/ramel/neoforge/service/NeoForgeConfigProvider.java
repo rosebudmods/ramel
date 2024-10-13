@@ -1,6 +1,6 @@
-package io.ix0rai.ramel.neoforge.service;
+package dev.rosebud.ramel.neoforge.service;
 
-import io.ix0rai.ramel.service.ConfigProvider;
+import dev.rosebud.ramel.service.ConfigProvider;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;

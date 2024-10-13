@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "io.ix0rai.ramel.mixin",
+  "package": "dev.rosebud.ramel.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "CamelEntityMixin"

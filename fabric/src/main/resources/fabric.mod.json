@@ -20,7 +20,7 @@
   "environment": "*",
   "entrypoints": {
     "modmenu": [
-      "io.ix0rai.ramel.fabric.client.RamelModMenu"
+      "dev.rosebud.ramel.fabric.client.RamelModMenu"
     ]
   },
 

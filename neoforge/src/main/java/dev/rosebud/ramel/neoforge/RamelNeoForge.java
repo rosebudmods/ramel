@@ -1,7 +1,7 @@
-package io.ix0rai.ramel.neoforge;
+package dev.rosebud.ramel.neoforge;
 
-import io.ix0rai.ramel.Ramel;
-import io.ix0rai.ramel.neoforge.client.RamelNeoForgeClient;
+import dev.rosebud.ramel.Ramel;
+import dev.rosebud.ramel.neoforge.client.RamelNeoForgeClient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;

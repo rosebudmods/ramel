@@ -1,6 +1,6 @@
-package io.ix0rai.ramel.fabric.service;
+package dev.rosebud.ramel.fabric.service;
 
-import io.ix0rai.ramel.service.ConfigProvider;
+import dev.rosebud.ramel.service.ConfigProvider;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Path;

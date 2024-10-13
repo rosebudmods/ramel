@@ -1,9 +1,9 @@
-package io.ix0rai.ramel.client;
+package dev.rosebud.ramel.client;
 
 import com.mojang.serialization.Codec;
 import folk.sisby.kaleido.lib.quiltconfig.api.Constraint;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
-import io.ix0rai.ramel.Config;
+import dev.rosebud.ramel.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;

@@ -1,4 +1,4 @@
-package io.ix0rai.ramel;
+package dev.rosebud.ramel;
 
 public class Ramel {
 

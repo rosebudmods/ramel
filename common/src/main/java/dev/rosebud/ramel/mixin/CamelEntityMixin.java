@@ -1,7 +1,7 @@
-package io.ix0rai.ramel.mixin;
+package dev.rosebud.ramel.mixin;
 
 import com.google.common.base.MoreObjects;
-import io.ix0rai.ramel.Config;
+import dev.rosebud.ramel.Config;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;

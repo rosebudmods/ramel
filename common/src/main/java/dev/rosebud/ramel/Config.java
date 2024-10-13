@@ -1,10 +1,10 @@
-package io.ix0rai.ramel;
+package dev.rosebud.ramel;
 
 import folk.sisby.kaleido.api.ReflectiveConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.FloatRange;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
-import io.ix0rai.ramel.service.ConfigProvider;
+import dev.rosebud.ramel.service.ConfigProvider;
 
 public class Config extends ReflectiveConfig {
 	private static final String FAMILY = Ramel.MODID;
