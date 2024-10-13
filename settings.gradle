@@ -1,8 +1,19 @@
 pluginManagement {
     repositories {
-        maven {
-            url = 'https://maven.fabricmc.net/'
-        }
         gradlePluginPortal()
+        mavenCentral()
+        maven {
+            url = 'https://maven.fabricmc.net'
+        }
+        maven {
+            url = 'https://maven.neoforged.net/releases'
+        }
     }
 }
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+rootProject.name = 'ramel'
+include 'common', 'fabric', 'neoforge'

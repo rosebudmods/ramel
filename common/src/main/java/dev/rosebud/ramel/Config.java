@@ -1,18 +1,14 @@
-package io.ix0rai.ramel;
+package dev.rosebud.ramel;
 
 import folk.sisby.kaleido.api.ReflectiveConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.FloatRange;
-import folk.sisby.kaleido.lib.quiltconfig.api.serializers.TomlSerializer;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
-import folk.sisby.kaleido.lib.quiltconfig.implementor_api.ConfigEnvironment;
-import net.fabricmc.loader.api.FabricLoader;
+import dev.rosebud.ramel.service.ConfigProvider;
 
 public class Config extends ReflectiveConfig {
-	private static final String FORMAT = "toml";
-	private static final String FAMILY = "ramel";
-	private static final ConfigEnvironment ENVIRONMENT = new ConfigEnvironment(FabricLoader.getInstance().getConfigDir(), FORMAT, TomlSerializer.INSTANCE);
-	public static final Config INSTANCE = create(ENVIRONMENT, FAMILY, "ramel", Config.class);
+	private static final String FAMILY = Ramel.MODID;
+	public static final Config INSTANCE = create(ConfigProvider.load().createConfigEnvironment(), FAMILY, "ramel", Config.class);
 
 	@Comment("The amount of extra range beyond the camel's normal hitbox, in blocks, that the ramming effect will apply.")
 	@Comment("Value will be halved for baby camels.")

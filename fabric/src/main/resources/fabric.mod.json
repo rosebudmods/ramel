@@ -10,22 +10,22 @@
   ],
 
   "contact": {
-    "homepage": "https://modrinth.com/mod/ramel",
-    "sources": "https://github.com/rosebudmods/ramel",
-    "issues": "https://github.com/rosebudmods/ramel/issues"
+    "homepage": "${website_url}",
+    "sources": "${sources_url}",
+    "issues": "${issue_tracker_url}"
   },
 
   "license": "MIT",
-  "icon": "assets/ramel/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "modmenu": [
-      "io.ix0rai.ramel.client.RamelModMenu"
+      "dev.rosebud.ramel.fabric.client.RamelModMenu"
     ]
   },
 
   "mixins": [
-    "ramel.mixins.json"
+    "${mod_id}.mixins.json"
   ],
 
   "depends": {
@@ -36,9 +36,9 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/TN9gaXJ6E8",
-        "modmenu.issues": "https://github.com/ix0rai/ramel/issues",
-        "modmenu.website": "https://modrinth.com/mod/ramel"
+        "modmenu.discord": "${discord_url}",
+        "modmenu.issues": "${issue_tracker_url}",
+        "modmenu.website": "${website_url}"
       }
     }
   }
