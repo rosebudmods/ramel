@@ -48,14 +48,6 @@ publishMods {
         clientRequired = true
         serverRequired = true
     }
-
-    github {
-        displayName = "Ramel ${project.version}"
-        version = project.version
-        repository = project.github_repository
-        accessToken = providers.environmentVariable("GITHUB_TOKEN")
-        commitish = project.github_branch
-    }
 }
 
 neoForge {

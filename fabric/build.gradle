@@ -57,16 +57,8 @@ publishMods {
         clientRequired = true
         serverRequired = true
 
-        requires("306612") // fabric-api
-        optional("308702") // modmenu
-    }
-
-    github {
-        displayName = "Ramel ${project.version}"
-        version = project.version
-        repository = project.github_repository
-        accessToken = providers.environmentVariable("GITHUB_TOKEN")
-        commitish = project.github_branch
+        requires("fabric-api") // fabric-api
+        optional("modmenu") // modmenu
     }
 }
 
