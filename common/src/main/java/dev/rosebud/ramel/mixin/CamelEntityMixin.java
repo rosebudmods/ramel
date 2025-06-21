@@ -3,6 +3,7 @@ package dev.rosebud.ramel.mixin;
 import com.google.common.base.MoreObjects;
 import dev.rosebud.ramel.Config;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,8 +38,10 @@ public abstract class CamelEntityMixin extends LivingEntity {
             return;
         }
 
-        int speedEffectModifier = this.hasEffect(MobEffects.MOVEMENT_SPEED) ? Objects.requireNonNull(this.getEffect(MobEffects.MOVEMENT_SPEED)).getAmplifier() + 1 : 0;
-        int slowEffectModifier = this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) ? Objects.requireNonNull(this.getEffect(MobEffects.MOVEMENT_SLOWDOWN)).getAmplifier() + 1 : 0;
+        ServerLevel level = (ServerLevel) this.level();
+
+        int speedEffectModifier = this.hasEffect(MobEffects.SPEED) ? Objects.requireNonNull(this.getEffect(MobEffects.SPEED)).getAmplifier() + 1 : 0;
+        int slowEffectModifier = this.hasEffect(MobEffects.SLOWNESS) ? Objects.requireNonNull(this.getEffect(MobEffects.SLOWNESS)).getAmplifier() + 1 : 0;
         double speedAdjustedImpact = Mth.clamp(this.getSpeed() * 1.65, .2, 3.0) + .25 * (speedEffectModifier - slowEffectModifier);
 
         float rammingRange = Config.INSTANCE.additionalRammingRange.value() * (isBaby() ? 0.5F : 1.0F);
@@ -46,17 +50,20 @@ public abstract class CamelEntityMixin extends LivingEntity {
 
         DamageSource source = this.damageSources().mobAttack(MoreObjects.firstNonNull(this.getControllingPassenger(), this));
 
-        this.level().getEntities(this, this.getBoundingBox().inflate(rammingRange), Entity::isAlive).stream()
+        level.getEntities(this, this.getBoundingBox().inflate(rammingRange), Entity::isAlive).stream()
                 .filter(e -> e instanceof LivingEntity && !this.getPassengers().contains(e))
                 .forEach(e -> {
                     LivingEntity entity = (LivingEntity) e;
 
+                    if (entity.hurtServer(level, source, rammingDamage)) {
+                        EnchantmentHelper.doPostAttackEffects(level, entity, source);
+                    }
+
                     entity.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK);
-                    entity.hurt(source, rammingDamage);
-                    final double blockedImpact = entity.isDamageSourceBlocked(source) ? .5 : 1.0;
+                    final double blockedImpact = entity.applyItemBlocking(level, source, rammingDamage) > 0.0 ? .5 : 1.0;
 
                     entity.knockback(blockedImpact * speedAdjustedImpact * knockBackMultiplier,
-                            Mth.sin(this.getXRot() * (Mth.PI / 180.0F)), -Mth.cos(this.getXRot() * (Mth.PI / 180.0F)));
+                            Mth.sin(this.getYRot() * Mth.PI / 180.0F), -Mth.cos(this.getYRot() * Mth.PI / 180.0F));
                     if (entity instanceof ServerPlayer player) {
                         // The player won't feel any effects if we don't update the velocity
                         player.connection.send(new ClientboundSetEntityMotionPacket(player));

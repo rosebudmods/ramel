@@ -21,7 +21,7 @@ config = "${mod_id}.mixins.json"
 [dependencies]
 "${mod_id}" = [
     { modId = "neoforge", type = "required", versionRange = "*", ordering = "NONE", side = "BOTH" },
-    { modId = "minecraft", type = "required", versionRange = "[1.21,)", ordering = "NONE", side = "BOTH" },
+    { modId = "minecraft", type = "required", versionRange = "[1.21.5,)", ordering = "NONE", side = "BOTH" },
 ]
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
