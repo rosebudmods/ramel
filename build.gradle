@@ -1,8 +1,9 @@
 plugins {
     id 'idea'
     id 'maven-publish'
-    id 'me.modmuss50.mod-publish-plugin' version '0.7.4' apply false
-    id 'net.neoforged.moddev' version '2.0.34-beta' apply false
+    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+    id 'me.modmuss50.mod-publish-plugin' version '1.0.0' apply false
+    id 'net.neoforged.moddev' version '2.0.112' apply false
 }
 
 version = "${project.mod_version}+mc${project.minecraft_version}"

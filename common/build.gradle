@@ -2,6 +2,14 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+neoForge.neoFormVersion = project.neoform_version
+
+configurations.configureEach {
+    resolutionStrategy {
+        force 'org.ow2.asm:asm:9.8'
+    }
+}
+
 dependencies {
     compileOnly("org.jetbrains:annotations:${project.jetbrains_annotations_version}")
     compileOnly("net.fabricmc:sponge-mixin:${project.mixin_version}")
@@ -12,8 +20,6 @@ dependencies {
 }
 
 neoForge {
-    neoFormVersion = project.neoform_version
-
     parchment {
         minecraftVersion = project.parchment_minecraft_version
         mappingsVersion = project.parchment_mappings_version

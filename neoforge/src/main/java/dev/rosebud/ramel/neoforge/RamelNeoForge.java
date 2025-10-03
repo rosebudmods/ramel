@@ -11,7 +11,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 public class RamelNeoForge {
 
     public RamelNeoForge(ModContainer modContainer, IEventBus modEventBus) {
-        if(FMLEnvironment.dist.isClient()) {
+        if(FMLEnvironment.getDist().isClient()) {
             RamelNeoForgeClient.init(modContainer);
         }
     }

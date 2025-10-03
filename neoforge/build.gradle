@@ -5,10 +5,11 @@ plugins {
 
 def platformName = "NeoForge"
 
+neoForge.version = project.neoforge_version
+
 dependencies {
     compileOnly(project(':common'))
     implementation("folk.sisby:kaleido-config:${project.kaleido_config_version}")
-    additionalRuntimeClasspath("folk.sisby:kaleido-config:${project.kaleido_config_version}") // needed because kaleido does not have a neoforge.mods.toml file
     jarJar("folk.sisby:kaleido-config:${project.kaleido_config_version}") {
         version {
             strictly "[${project.kaleido_config_version},)"
@@ -51,8 +52,6 @@ publishMods {
 }
 
 neoForge {
-    version = project.neoforge_version
-
     parchment {
         minecraftVersion = project.parchment_minecraft_version
         mappingsVersion = project.parchment_mappings_version
