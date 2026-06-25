@@ -2,13 +2,14 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'me.modmuss50.mod-publish-plugin' version '0.7.4' apply false
-    id 'net.neoforged.moddev' version '2.0.34-beta' apply false
+    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
+    id 'net.neoforged.moddev' version "${moddevgradle_version}" apply false
 }
 
 version = "${project.mod_version}+mc${project.minecraft_version}"
 group = project.maven_group
 
-def targetJavaVersion = 21
+def targetJavaVersion = project.java_version.toInteger()
 
 subprojects {
     apply plugin: 'java-library'
@@ -19,13 +20,6 @@ subprojects {
         maven { url = 'https://maven.quiltmc.org/repository/release' }
         maven { url = 'https://maven.terraformersmc.com/releases' }
         maven { url = 'https://repo.sleeping.town' }
-        maven {
-            name = "ParchmentMC"
-            url = "https://maven.parchmentmc.org"
-            content {
-                includeGroupAndSubgroups "org.parchmentmc"
-            }
-        }
     }
 
     java {
@@ -68,6 +62,9 @@ subprojects {
         def expandProps = [
                 'version': version,
                 'minecraft_version': project.minecraft_version,
+                'minecraft_version_range_fabric': project.minecraft_version_range_fabric,
+                'minecraft_version_range_neoforge': project.minecraft_version_range_neoforge,
+
                 'mod_id': project.mod_id,
                 'maven_group_id': project.maven_group,
                 'website_url': project.website_url,

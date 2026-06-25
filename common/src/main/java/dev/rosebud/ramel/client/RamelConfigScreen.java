@@ -44,6 +44,6 @@ public class RamelConfigScreen extends OptionsSubScreen {
 		float min = range.min();
 		float max = range.max();
 
-		return new OptionInstance<>("ramel.config." + stringValue, OptionInstance.cachedConstantTooltip(Component.translatable("ramel.config.tooltip." + stringValue)), (text, value) -> Options.genericValueLabel(text, Component.translatable("ramel.config.value." + stringValue, value)), (new OptionInstance.IntRange((int) (min * 10), (int) (max * 10))).xmap((intValue) -> intValue / 10.0F, (doubleValue) -> (int) (doubleValue * 10.0D)), Codec.floatRange(min, max), trackedValue.value(), trackedValue::setValue);
+		return new OptionInstance<>("ramel.config." + stringValue, OptionInstance.cachedConstantTooltip(Component.translatable("ramel.config.tooltip." + stringValue)), (text, value) -> Options.genericValueLabel(text, Component.translatable("ramel.config.value." + stringValue, value)), (new OptionInstance.IntRange((int) (min * 10), (int) (max * 10))).xmap((intValue) -> intValue / 10.0F, (doubleValue) -> (int) (doubleValue * 10.0D), true), Codec.floatRange(min, max), trackedValue.value(), trackedValue::setValue);
 	}
 }

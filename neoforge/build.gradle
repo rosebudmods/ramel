@@ -8,7 +8,7 @@ def platformName = "NeoForge"
 dependencies {
     compileOnly(project(':common'))
     implementation("folk.sisby:kaleido-config:${project.kaleido_config_version}")
-    additionalRuntimeClasspath("folk.sisby:kaleido-config:${project.kaleido_config_version}") // needed because kaleido does not have a neoforge.mods.toml file
+    runtimeOnly("folk.sisby:kaleido-config:${project.kaleido_config_version}") // needed because kaleido does not have a neoforge.mods.toml file
     jarJar("folk.sisby:kaleido-config:${project.kaleido_config_version}") {
         version {
             strictly "[${project.kaleido_config_version},)"
@@ -20,8 +20,8 @@ dependencies {
 publishMods {
     displayName = "[${platformName}] ${project.version}"
     version = "${project.version}-${project.name}"
-    file = jar.archiveFile
-    additionalFiles.from(sourcesJar.archiveFile)
+    file = tasks.named("jar", Jar).flatMap { it.archiveFile }
+    additionalFiles.from(tasks.named("sourcesJar", Jar).flatMap { it.archiveFile })
     changelog = rootProject.file("CHANGELOG.md").getText()
     type = STABLE
 
@@ -52,11 +52,6 @@ publishMods {
 
 neoForge {
     version = project.neoforge_version
-
-    parchment {
-        minecraftVersion = project.parchment_minecraft_version
-        mappingsVersion = project.parchment_mappings_version
-    }
 
     mods {
         "${mod_id}" {
