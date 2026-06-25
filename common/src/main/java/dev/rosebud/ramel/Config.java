@@ -24,4 +24,9 @@ public class Config extends ReflectiveConfig {
 	@Comment("Value will be halved for baby camels.")
 	@FloatRange(min = 0.0f, max = 5.0f)
 	public final TrackedValue<Float> knockbackMultiplier = this.value(1.0f);
+
+	@Comment("The vertical knockup multiplier applied to entities rammed. 0.0 will be no knockup, 2.0 will be twice the normal knockup.")
+	@Comment("Value will be halved for baby camels.")
+	@FloatRange(min = 0.0f, max = 5.0f)
+	public final TrackedValue<Float> knockupMultiplier = this.value(1.0f);
 }

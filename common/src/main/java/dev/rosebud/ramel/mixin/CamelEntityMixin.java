@@ -1,12 +1,12 @@
 package dev.rosebud.ramel.mixin;
 
-import com.google.common.base.MoreObjects;
 import dev.rosebud.ramel.Config;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Objects;
 
 @Mixin(Camel.class)
 public abstract class CamelEntityMixin extends LivingEntity {
@@ -36,29 +34,39 @@ public abstract class CamelEntityMixin extends LivingEntity {
             return;
         }
 
-        int speedEffectModifier = this.hasEffect(MobEffects.MOVEMENT_SPEED) ? Objects.requireNonNull(this.getEffect(MobEffects.MOVEMENT_SPEED)).getAmplifier() + 1 : 0;
-        int slowEffectModifier = this.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) ? Objects.requireNonNull(this.getEffect(MobEffects.MOVEMENT_SLOWDOWN)).getAmplifier() + 1 : 0;
+        /* Speed & Slowness affect knockback velocity */
+        MobEffectInstance speedEffect = this.getEffect(MobEffects.MOVEMENT_SPEED);
+        MobEffectInstance slowEffect = this.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+        int speedEffectModifier = speedEffect == null ? 0 : speedEffect.getAmplifier() + 1;
+        int slowEffectModifier = slowEffect == null ? 0 : slowEffect.getAmplifier() + 1;
         double speedAdjustedImpact = Mth.clamp(this.getSpeed() * 1.65, .2, 3.0) + .25 * (speedEffectModifier - slowEffectModifier);
 
-        float rammingRange = Config.INSTANCE.additionalRammingRange.value() * (isBaby() ? 0.5F : 1.0F);
-        float rammingDamage = Config.INSTANCE.rammingDamage.value() * (isBaby() ? 0.5F : 1.0F);
-        float knockBackMultiplier = Config.INSTANCE.knockbackMultiplier.value() * (isBaby() ? 0.5F : 1.0F);
+        /* Set parameters from config */
+        float babyModifier = this.isBaby() ? .5F : 1.0F;
+        float rammingRange = Config.INSTANCE.additionalRammingRange.value() * babyModifier;
+        float rammingDamage = Config.INSTANCE.rammingDamage.value() * babyModifier;
+        float knockbackMultiplier = Config.INSTANCE.knockbackMultiplier.value() * babyModifier;
+        float knockupMultiplier = Config.INSTANCE.knockupMultiplier.value() * babyModifier;
 
-        DamageSource source = this.damageSources().mobAttack(MoreObjects.firstNonNull(this.getControllingPassenger(), this));
+        Entity sourceEntity = this.getControllingPassenger();
+        DamageSource source = this.damageSources().mobAttack(sourceEntity instanceof LivingEntity attacker ? attacker : this);
 
-        this.level().getEntities(this, this.getBoundingBox().inflate(rammingRange), Entity::isAlive).stream()
-                .filter(e -> e instanceof LivingEntity && !this.getPassengers().contains(e))
-                .forEach(e -> {
-                    LivingEntity entity = (LivingEntity) e;
-
+        /* Apply knockback, knockup velocity and damage to all hit entities */
+        this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(rammingRange),
+                /* Exclude this camel and its passengers from ramming effects */
+                e -> e.isAlive() && e != this && !this.getPassengers().contains(e))
+                .forEach(entity -> {
                     entity.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK);
                     entity.hurt(source, rammingDamage);
-                    final double blockedImpact = entity.isDamageSourceBlocked(source) ? .5 : 1.0;
 
-                    entity.knockback(blockedImpact * speedAdjustedImpact * knockBackMultiplier,
-                            Mth.sin(this.getXRot() * (Mth.PI / 180.0F)), -Mth.cos(this.getXRot() * (Mth.PI / 180.0F)));
+                    double shieldedMultiplier = entity.isDamageSourceBlocked(source) ? .5 : 1.0;
+                    double knockbackStrength = shieldedMultiplier * speedAdjustedImpact * knockbackMultiplier;
+                    double knockupStrength = Mth.clamp(speedAdjustedImpact * 0.15 * knockupMultiplier, 0.0, 2.0);
+
+                    entity.knockback(knockbackStrength, this.getX() - entity.getX(), this.getZ() - entity.getZ());
+                    entity.push(0.0, knockupStrength, 0.0);
+
                     if (entity instanceof ServerPlayer player) {
-                        // The player won't feel any effects if we don't update the velocity
                         player.connection.send(new ClientboundSetEntityMotionPacket(player));
                     }
                 });
