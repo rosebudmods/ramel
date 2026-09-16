@@ -16,7 +16,7 @@
   },
 
   "license": "MIT",
-  "icon": "icon.png",
+  "icon": "assets/${mod_id}/icon.png",
   "environment": "*",
   "entrypoints": {
     "modmenu": [
@@ -40,6 +40,10 @@
         "modmenu.issues": "${issue_tracker_url}",
         "modmenu.website": "${website_url}"
       }
+    },
+    "catalogue": {
+      "banner": "assets/${mod_id}/banner.png",
+      "background": "assets/${mod_id}/background.png"
     }
   }
 }
