@@ -19,6 +19,9 @@
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "dev.rosebud.ramel.fabric.RamelFabric"
+    ],
     "modmenu": [
       "dev.rosebud.ramel.fabric.client.RamelModMenu"
     ]

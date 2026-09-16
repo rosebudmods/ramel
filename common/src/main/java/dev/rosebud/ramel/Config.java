@@ -10,6 +10,8 @@ public class Config extends ReflectiveConfig {
 	private static final String FAMILY = Ramel.MODID;
 	public static final Config INSTANCE = create(ConfigProvider.load().createConfigEnvironment(), FAMILY, "ramel", Config.class);
 
+	public static void init() {}
+
 	@Comment("The amount of extra range beyond the camel's normal hitbox, in blocks, that the ramming effect will apply.")
 	@Comment("Value will be halved for baby camels.")
 	@FloatRange(min = 0.0f, max = 2.5f)
