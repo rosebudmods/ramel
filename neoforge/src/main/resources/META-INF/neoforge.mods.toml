@@ -9,7 +9,10 @@ modId = "${mod_id}"
 version = "${version}"
 displayName = "Ramel"
 displayURL = "${website_url}"
-logoFile = "banner.png"
+iconFile = "assets/${mod_id}/icon.png"
+logoFile = "assets/${mod_id}/banner.png"
+bannerFile = "assets/${mod_id}/banner.png"
+logoBlur = true
 #credits = "" #optional
 authors = "eristhea"
 description = '''bring your camels to ramming speed!''' # Supports multiline text
@@ -31,5 +34,6 @@ config = "${mod_id}.mixins.json"
 #openGLVersion="[3.2,)"
 javaVersion = "[${java_version},)"
 
-[modproperties.ramel]
-catalogueImageIcon = "icon.png"
+[modproperties.${mod_id}]
+catalogueImageIcon = "assets/${mod_id}/icon.png"
+catalogueBackground = "assets/${mod_id}/background.png"
