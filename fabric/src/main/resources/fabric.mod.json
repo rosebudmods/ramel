@@ -19,6 +19,9 @@
   "icon": "assets/${mod_id}/icon.png",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "dev.rosebud.ramel.fabric.RamelFabric"
+    ],
     "modmenu": [
       "dev.rosebud.ramel.fabric.client.RamelModMenu"
     ]
@@ -30,7 +33,7 @@
 
   "depends": {
     "fabricloader": ">=0.15.11",
-    "minecraft": ">=1.21"
+    "minecraft": "${minecraft_version_range_fabric}"
   },
 
   "custom": {
