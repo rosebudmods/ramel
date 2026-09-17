@@ -18,7 +18,12 @@ subprojects {
     repositories {
         maven { url = 'https://maven.quiltmc.org/repository/release' }
         maven { url = 'https://maven.terraformersmc.com/releases' }
-        maven { url = 'https://repo.sleeping.town' }
+        maven {
+            url = 'https://repo.sleeping.town'
+            content {
+                includeGroup 'folk.sisby'
+            }
+        }
         maven {
             name = "ParchmentMC"
             url = "https://maven.parchmentmc.org"
@@ -68,6 +73,8 @@ subprojects {
         def expandProps = [
                 'version': version,
                 'minecraft_version': project.minecraft_version,
+                'minecraft_version_range_fabric': project.minecraft_version_range_fabric,
+                'minecraft_version_range_neoforge': project.minecraft_version_range_neoforge,
                 'mod_id': project.mod_id,
                 'maven_group_id': project.maven_group,
                 'website_url': project.website_url,

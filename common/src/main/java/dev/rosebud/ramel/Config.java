@@ -10,6 +10,8 @@ public class Config extends ReflectiveConfig {
 	private static final String FAMILY = Ramel.MODID;
 	public static final Config INSTANCE = create(ConfigProvider.load().createConfigEnvironment(), FAMILY, "ramel", Config.class);
 
+	public static void init() {}
+
 	@Comment("The amount of extra range beyond the camel's normal hitbox, in blocks, that the ramming effect will apply.")
 	@Comment("Value will be halved for baby camels.")
 	@FloatRange(min = 0.0f, max = 2.5f)
@@ -24,4 +26,9 @@ public class Config extends ReflectiveConfig {
 	@Comment("Value will be halved for baby camels.")
 	@FloatRange(min = 0.0f, max = 5.0f)
 	public final TrackedValue<Float> knockbackMultiplier = this.value(1.0f);
+
+	@Comment("The vertical knockup multiplier applied to entities rammed. 0.0 will be no knockup, 2.0 will be twice the normal knockup.")
+	@Comment("Value will be halved for baby camels.")
+	@FloatRange(min = 0.0f, max = 5.0f)
+	public final TrackedValue<Float> knockupMultiplier = this.value(1.0f);
 }
