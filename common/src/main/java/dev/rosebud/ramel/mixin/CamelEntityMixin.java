@@ -13,8 +13,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -56,10 +58,11 @@ public abstract class CamelEntityMixin extends LivingEntity {
                 /* Exclude this camel and its passengers from ramming effects */
                 e -> e.isAlive() && e != this && !this.getPassengers().contains(e))
                 .forEach(entity -> {
+                    boolean blockedImpact = ramel$blocksImpact(entity, source);
                     entity.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK);
                     entity.hurt(source, rammingDamage);
 
-                    double shieldedMultiplier = entity.isBlocking() ? .5 : 1.0;
+                    double shieldedMultiplier = blockedImpact ? .5 : 1.0;
                     double knockbackStrength = shieldedMultiplier * speedAdjustedImpact * knockbackMultiplier;
                     double knockupStrength = Mth.clamp(speedAdjustedImpact * 0.15 * knockupMultiplier, 0.0, 2.0);
 
@@ -70,5 +73,16 @@ public abstract class CamelEntityMixin extends LivingEntity {
                         player.connection.send(new ClientboundSetEntityMotionPacket(player));
                     }
                 });
+    }
+
+    // moj removed LivingEntity.isDamageSourceBlocked after 1.21.1 and this is the best i can do for directional blocking
+    @Unique
+    private static boolean ramel$blocksImpact(LivingEntity entity, DamageSource source) {
+        Vec3 sourcePosition = source.getSourcePosition();
+        if (!entity.isBlocking() || sourcePosition == null) return false;
+
+        Vec3 view = entity.calculateViewVector(0.0F, entity.getYHeadRot());
+        Vec3 direction = sourcePosition.subtract(entity.position()).multiply(1.0, 0.0, 1.0).normalize();
+        return direction.dot(view) > 0.0;
     }
 }
