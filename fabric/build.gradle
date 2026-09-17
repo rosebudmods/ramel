@@ -1,22 +1,18 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom'
     id 'me.modmuss50.mod-publish-plugin'
 }
 def platformName = "Fabric"
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.minecraft_version}")
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_mappings_version}@zip")
-    }
     compileOnly(project(':common'))
 
-    modImplementation("net.fabricmc:fabric-loader:${project.fabric_loader_version}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+    implementation("net.fabricmc:fabric-loader:${project.fabric_loader_version}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
-    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
-    modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}")
+    compileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
+    runtimeOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 
     implementation("folk.sisby:kaleido-config:${project.kaleido_config_version}")
     include("folk.sisby:kaleido-config:${project.kaleido_config_version}")
@@ -25,8 +21,8 @@ dependencies {
 publishMods {
     displayName = "[${platformName}] ${project.version}"
     version = "${project.version}-${project.name}"
-    file = remapJar.archiveFile
-    additionalFiles.from(sourcesJar.archiveFile)
+    file = tasks.named("jar", Jar).flatMap { it.archiveFile }
+    additionalFiles.from(tasks.named("sourcesJar", Jar).flatMap { it.archiveFile })
     changelog = rootProject.file("CHANGELOG.md").getText()
     type = STABLE
 
