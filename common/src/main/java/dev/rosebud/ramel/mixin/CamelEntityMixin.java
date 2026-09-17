@@ -44,9 +44,11 @@ public abstract class CamelEntityMixin extends LivingEntity {
         int slowEffectModifier = this.hasEffect(MobEffects.SLOWNESS) ? Objects.requireNonNull(this.getEffect(MobEffects.SLOWNESS)).getAmplifier() + 1 : 0;
         double speedAdjustedImpact = Mth.clamp(this.getSpeed() * 1.65, .2, 3.0) + .25 * (speedEffectModifier - slowEffectModifier);
 
-        float rammingRange = Config.INSTANCE.additionalRammingRange.value() * (isBaby() ? 0.5F : 1.0F);
-        float rammingDamage = Config.INSTANCE.rammingDamage.value() * (isBaby() ? 0.5F : 1.0F);
-        float knockBackMultiplier = Config.INSTANCE.knockbackMultiplier.value() * (isBaby() ? 0.5F : 1.0F);
+        float babyModifier = this.isBaby() ? 0.5F : 1.0F;
+        float rammingRange = Config.INSTANCE.additionalRammingRange.value() * babyModifier;
+        float rammingDamage = Config.INSTANCE.rammingDamage.value() * babyModifier;
+        float knockbackMultiplier = Config.INSTANCE.knockbackMultiplier.value() * babyModifier;
+        float knockupMultiplier = Config.INSTANCE.knockupMultiplier.value() * babyModifier;
 
         DamageSource source = this.damageSources().mobAttack(MoreObjects.firstNonNull(this.getControllingPassenger(), this));
 
@@ -62,8 +64,11 @@ public abstract class CamelEntityMixin extends LivingEntity {
                     entity.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK);
                     final double blockedImpact = entity.applyItemBlocking(level, source, rammingDamage) > 0.0 ? .5 : 1.0;
 
-                    entity.knockback(blockedImpact * speedAdjustedImpact * knockBackMultiplier,
-                            Mth.sin(this.getYRot() * Mth.PI / 180.0F), -Mth.cos(this.getYRot() * Mth.PI / 180.0F));
+                    double knockbackStrength = blockedImpact * speedAdjustedImpact * knockbackMultiplier;
+                    double knockupStrength = Mth.clamp(speedAdjustedImpact * 0.15 * knockupMultiplier, 0.0, 2.0);
+
+                    entity.knockback(knockbackStrength, this.getX() - entity.getX(), this.getZ() - entity.getZ());
+                    entity.push(0.0, knockupStrength, 0.0);
                     if (entity instanceof ServerPlayer player) {
                         // The player won't feel any effects if we don't update the velocity
                         player.connection.send(new ClientboundSetEntityMotionPacket(player));

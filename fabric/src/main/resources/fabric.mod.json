@@ -6,7 +6,7 @@
   "description": "bring your camels to ramming speed!",
 
   "authors": [
-    "ix0rai"
+    "eristhea"
   ],
 
   "contact": {
@@ -16,9 +16,12 @@
   },
 
   "license": "MIT",
-  "icon": "icon.png",
+  "icon": "assets/${mod_id}/icon.png",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "dev.rosebud.ramel.fabric.RamelFabric"
+    ],
     "modmenu": [
       "dev.rosebud.ramel.fabric.client.RamelModMenu"
     ]
@@ -30,7 +33,7 @@
 
   "depends": {
     "fabricloader": ">=0.15.11",
-    "minecraft": ">=1.21.5"
+    "minecraft": "${minecraft_version_range_fabric}"
   },
 
   "custom": {
@@ -40,6 +43,10 @@
         "modmenu.issues": "${issue_tracker_url}",
         "modmenu.website": "${website_url}"
       }
+    },
+    "catalogue": {
+      "banner": "assets/${mod_id}/banner.png",
+      "background": "assets/${mod_id}/background.png"
     }
   }
 }
