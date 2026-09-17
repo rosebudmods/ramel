@@ -15,8 +15,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -56,15 +58,15 @@ public abstract class CamelEntityMixin extends LivingEntity {
                 .filter(e -> e instanceof LivingEntity && !this.getPassengers().contains(e))
                 .forEach(e -> {
                     LivingEntity entity = (LivingEntity) e;
+                    boolean blockedImpact = ramel$blocksImpact(entity, source);
 
                     if (entity.hurtServer(level, source, rammingDamage)) {
                         EnchantmentHelper.doPostAttackEffects(level, entity, source);
                     }
 
                     entity.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK);
-                    final double blockedImpact = entity.applyItemBlocking(level, source, rammingDamage) > 0.0 ? .5 : 1.0;
 
-                    double knockbackStrength = blockedImpact * speedAdjustedImpact * knockbackMultiplier;
+                    double knockbackStrength = (blockedImpact ? .5 : 1.0) * speedAdjustedImpact * knockbackMultiplier;
                     double knockupStrength = Mth.clamp(speedAdjustedImpact * 0.15 * knockupMultiplier, 0.0, 2.0);
 
                     entity.knockback(knockbackStrength, this.getX() - entity.getX(), this.getZ() - entity.getZ());
@@ -75,4 +77,15 @@ public abstract class CamelEntityMixin extends LivingEntity {
                     }
                 });
     }
+
+    // moj removed LivingEntity.isDamageSourceBlocked after 1.21.1 and this is the best i can do for directional blocking
+    @Unique
+    private static boolean ramel$blocksImpact(LivingEntity entity, DamageSource source) {
+    Vec3 sourcePosition = source.getSourcePosition();
+    if (!entity.isBlocking() || sourcePosition == null) return false;
+
+    Vec3 view = entity.calculateViewVector(0.0F, entity.getYHeadRot());
+    Vec3 direction = sourcePosition.subtract(entity.position()).multiply(1.0, 0.0, 1.0).normalize();
+    return direction.dot(view) > 0.0;
+  }
 }
