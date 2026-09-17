@@ -56,10 +56,11 @@ public abstract class CamelEntityMixin extends LivingEntity {
                 /* Exclude this camel and its passengers from ramming effects */
                 e -> e.isAlive() && e != this && !this.getPassengers().contains(e))
                 .forEach(entity -> {
+                    boolean blockedImpact = entity.isDamageSourceBlocked(source);
                     entity.playSound(SoundEvents.PLAYER_ATTACK_KNOCKBACK);
                     entity.hurt(source, rammingDamage);
 
-                    double shieldedMultiplier = entity.isDamageSourceBlocked(source) ? .5 : 1.0;
+                    double shieldedMultiplier = blockedImpact ? .5 : 1.0;
                     double knockbackStrength = shieldedMultiplier * speedAdjustedImpact * knockbackMultiplier;
                     double knockupStrength = Mth.clamp(speedAdjustedImpact * 0.15 * knockupMultiplier, 0.0, 2.0);
 
